@@ -20,7 +20,8 @@ class RSA:
     # ---------------------------------------------
 
     MIN_KEY_SIZE = 2048  # Минимальный безопасный размер ключа (бит)
-    MIN_PRIME_SIZE = 128  # Минимальный размер простых чисел (бит)
+    MIN_PRIME_SIZE = 128 # Минимальный размер простого числа (бит)
+    MIN_PRIME_ROUNDS = 128  # Минимальное количество раундов определения простых чисел
     DEFAULT_PUBLIC_EXPONENTS = [3, 17, 65537]  # Рекомендуемые значения открытой экспоненты e
     DEFAULT_ENCODING = 'utf-8'  # Кодировка для текстовых данных
     PUBLIC_TYPE = 'PUBLIC'  # Тип публичного ключа
@@ -46,7 +47,7 @@ class RSA:
     # ---------------------------------------------
 
     @staticmethod
-    def is_prime(n: int, k: int = MIN_PRIME_SIZE) -> bool:
+    def is_prime(n: int, k: int = MIN_PRIME_ROUNDS) -> bool:
         """
         Тест Миллера-Рабина для проверки простоты числа
         :param n: Число для проверки
@@ -84,7 +85,7 @@ class RSA:
         return True  # Вероятно простое число
 
     @staticmethod
-    def is_prime_ferma(n: int, k: int = MIN_PRIME_SIZE) -> bool:
+    def is_prime_ferma(n: int, k: int = MIN_PRIME_ROUNDS) -> bool:
         """
         Улучшенный тест Ферма (с проверкой на числа Кармайкла) для проверки простоты числа
         :param n: Число для проверки
@@ -507,7 +508,7 @@ def interactive_mode():
                     with open(source_file, mode=source_file_mode, encoding=source_file_encoding) as file:
                         data = file.read()
                 else:
-                    text = input(f"Введите текст: (в {('читаемом' if is_encrypt_operation else 'Base64')} формате)").strip() or "Асимметричный криптографический алгоритм RSA"
+                    text = input(f"Введите текст (в {('читаемом' if is_encrypt_operation else 'Base64')} формате): ").strip() or "Rivest–Shamir–Adleman"
                     if not text:
                         print("Ошибка: текст для обработки не указан!", end='\n\n')
                         continue
