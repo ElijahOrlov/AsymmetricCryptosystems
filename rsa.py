@@ -47,7 +47,7 @@ class RSA:
     # ---------------------------------------------
 
     @staticmethod
-    def is_prime(n: int, k: int = MIN_PRIME_ROUNDS) -> bool:
+    def is_prime_miller(n: int, k: int = MIN_PRIME_ROUNDS) -> bool:
         """
         Тест Миллера-Рабина для проверки простоты числа
         :param n: Число для проверки
@@ -85,7 +85,7 @@ class RSA:
         return True  # Вероятно простое число
 
     @staticmethod
-    def is_prime_ferma(n: int, k: int = MIN_PRIME_ROUNDS) -> bool:
+    def is_prime_fermat(n: int, k: int = MIN_PRIME_ROUNDS) -> bool:
         """
         Улучшенный тест Ферма (с проверкой на числа Кармайкла) для проверки простоты числа
         :param n: Число для проверки
@@ -189,23 +189,25 @@ class RSA:
     # ---------------------------------------------
 
     @classmethod
-    def get_prime_number(cls, num_size: int) -> int:
+    def get_prime_number(cls, num_size: int, prime_check_type: str = "FERMAT") -> int:
         """
         Формирование простого числа по указанному размеру (бит)
             1. Генерация случайного числа с установленным старшим битом
             2. Проверка на простоту методом Миллера-Рабина
             3. Повтор до нахождения простого числа
         :param num_size: Размер числа в битах
+        :param prime_check_type: Размер числа в битах
         :return: Простое число
         """
         if num_size < cls.MIN_PRIME_SIZE:
             raise ValueError("Слишком маленький размер простого числа")
 
+        is_prime_check = cls.is_prime_fermat if prime_check_type == "FERMAT" else cls.is_prime_miller
         while True:
             # Генерация числа с установленным старшим битом
             num = random.getrandbits(num_size)
             num |= (1 << (num_size - 1)) | 1  # Гарантируем нечетность и размер
-            if cls.is_prime_ferma(num):  # Проверка тестом Миллера-Рабина
+            if is_prime_check(num):  # Проверка тестом Миллера-Рабина
                 return num
 
     def generate_keys(self, key_size: int = MIN_KEY_SIZE, exponent: int = DEFAULT_PUBLIC_EXPONENTS[-1]) -> tuple:
